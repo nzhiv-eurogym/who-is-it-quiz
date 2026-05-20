@@ -406,6 +406,8 @@ function showAdminDashboard(){
   refreshAdminResults();
 
   if(firebaseEnabled && database){
+    database.ref('scores').off('value');
+
     database.ref('scores').on('value', snap => {
       const arr = [];
       snap.forEach(child => arr.push(child.val()));
@@ -413,6 +415,7 @@ function showAdminDashboard(){
     });
   }
 }
+
 
 function renderParticipants(list){
   if(!participantsList) return;
@@ -451,31 +454,25 @@ function renderParticipants(list){
 }
 
 async function refreshAdminResults(){
-  if(!firebaseEnabled){
-    try{
-      const raw = localStorage.getItem(RESULTS_KEY);
-      const participants = raw ? JSON.parse(raw) : [];
-      renderParticipants(Array.isArray(participants) ? sortAdminParticipants(participants) : []);
-    }catch(e){
-      console.warn('Ошибка чтения локальных результатов', e);
-      renderParticipants([]);
-    }
+  if(!participantsList) return;
+
+  if(!firebaseEnabled || !database){
+    participantsList.textContent = 'Firebase не подключён.';
     return;
   }
+
   try{
     const snap = await database.ref('scores').once('value');
     const arr = [];
-    snap.forEach(child => arr.push(child.val()));
+
+    snap.forEach(child => {
+      arr.push(child.val());
+    });
+
     renderParticipants(sortAdminParticipants(arr));
   } catch(e){
-    console.warn('Ошибка загрузки текущих результатов', e);
-    try{
-      const raw = localStorage.getItem(RESULTS_KEY);
-      const participants = raw ? JSON.parse(raw) : [];
-      renderParticipants(Array.isArray(participants) ? sortAdminParticipants(participants) : []);
-    } catch(err){
-      participantsList.textContent = 'Ошибка загрузки результатов.';
-    }
+    console.warn('Ошибка загрузки результатов из Firebase', e);
+    participantsList.textContent = 'Ошибка загрузки результатов из Firebase.';
   }
 }
 
