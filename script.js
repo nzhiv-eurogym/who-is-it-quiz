@@ -303,31 +303,11 @@ function saveLocalResult(entry){
 }
 
 function showResult(){
-  // переключаем экраны
   quizScreen.classList.remove('active');
   startScreen.classList.remove('active');
   resultScreen.classList.add('active');
 
-  resultText.textContent = `${state.name}: ${state.score} из ${quizData.length}`;
-
-  // запрос топ-3 из Firebase (если настроен) или берем локальные данные
-  if(firebaseEnabled){
-    const ref = database.ref('scores');
-    // берём верхние 3 — orderByChild + limitToLast
-    ref.orderByChild('score').limitToLast(3).once('value', snap => {
-      const arr = [];
-      snap.forEach(child => arr.push(child.val()));
-      // сортируем по убыванию
-      arr.sort((a,b)=>b.score - a.score);
-      renderPodium(arr);
-    }, err => {
-      console.warn('Ошибка чтения топа', err);
-      renderPodium([]);
-    });
-  } else {
-    // если Firebase не настроен — используем только локальный результат
-    renderPodium([{name: state.name, score: state.score}]);
-  }
+  resultText.textContent = `${state.name}, ты набрал(а) ${state.score} из ${quizData.length} баллов.`;
 }
 
 function renderPodium(list){
