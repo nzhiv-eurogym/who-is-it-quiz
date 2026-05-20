@@ -499,7 +499,14 @@ const resetCancelBtn = document.getElementById('reset-cancel-btn');
 if(openAdminBtn) openAdminBtn.addEventListener('click', openAdminScreen);
 if(adminLoginBtn) adminLoginBtn.addEventListener('click', authenticateAdmin);
 if(adminCloseLoginBtn) adminCloseLoginBtn.addEventListener('click', closeAdminScreen);
-if(adminStopBtn) adminStopBtn.addEventListener('click', stopQuizByAdmin);
+if(adminStopBtn) {
+  adminStopBtn.addEventListener('click', () => {
+    const ok = confirm('Остановить квиз и опубликовать результаты? Участники больше не смогут проходить квиз.');
+    if(ok) stopQuizByAdmin();
+  });
+}
+
+
 if(adminResetBtn) adminResetBtn.addEventListener('click', resetQuizStop);
 if(adminClearBtn) adminClearBtn.addEventListener('click', openResetModal);
 if(adminRefreshBtn) adminRefreshBtn.addEventListener('click', refreshAdminResults);
@@ -607,19 +614,36 @@ async function clearQuizResults(){
 function fetchAndRenderWinners(){
   if(!firebaseEnabled){
     const local = localStorage.getItem(STORAGE_KEY);
-    if(local){ const one = JSON.parse(local); renderWinners([one]); }
+    if(local){
+      const one = JSON.parse(local);
+      renderWinners([one]);
+    }
     if(winnersWrap) winnersWrap.style.display = 'block';
-    const card = startScreen.querySelector('.start-card'); if(card) card.style.display='none';
+    const card = startScreen.querySelector('.start-card');
+    if(card) card.style.display = 'none';
     return;
   }
-  database.ref('control/winners').once('value', snap => {
+
+  database.ref('scores').once('value', snap => {
     const arr = [];
-    snap.forEach(child => arr.push(child.val()));
+
+    snap.forEach(child => {
+      arr.push(child.val());
+    });
+
+    arr.sort((a, b) => b.score - a.score);
+
     renderWinners(arr);
-    if(winnersWrap) winnersWrap.style.display = arr.length? 'block':'none';
-    const card = startScreen.querySelector('.start-card'); if(card && arr.length) card.style.display='none';
-  }, err => { console.warn('Ошибка получения победителей', err); });
+
+    if(winnersWrap) winnersWrap.style.display = arr.length ? 'block' : 'none';
+
+    const card = startScreen.querySelector('.start-card');
+    if(card && arr.length) card.style.display = 'none';
+  }, err => {
+    console.warn('Ошибка получения победителей', err);
+  });
 }
+
 
 function renderWinners(list){
   if(!winnersList) return;
