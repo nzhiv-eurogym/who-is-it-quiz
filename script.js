@@ -396,12 +396,22 @@ function showAdminLogin(){
 
 function showAdminDashboard(){
   const adminLoginContainer = document.getElementById('admin-login');
+
   if(adminLoginContainer) adminLoginContainer.style.display = 'none';
   if(adminDashboard) adminDashboard.style.display = 'block';
   if(adminLoginBtn) adminLoginBtn.style.display = 'none';
   if(adminCloseLoginBtn) adminCloseLoginBtn.style.display = 'none';
   if(adminPassword) adminPassword.value = '';
+
   refreshAdminResults();
+
+  if(firebaseEnabled && database){
+    database.ref('scores').on('value', snap => {
+      const arr = [];
+      snap.forEach(child => arr.push(child.val()));
+      renderParticipants(sortAdminParticipants(arr));
+    });
+  }
 }
 
 function renderParticipants(list){
