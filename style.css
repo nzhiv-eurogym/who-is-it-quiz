@@ -1,0 +1,100 @@
+/* Mobile-first modern party quiz styles */
+:root{
+  --bg1: linear-gradient(135deg,#f6d365 0%,#fda085 100%);
+  --glass: rgba(255,255,255,0.12);
+  --glass-2: rgba(255,255,255,0.06);
+  --accent: #7b61ff;
+  --accent-2: #ff5ca8;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.05), transparent 10%), var(--bg1);
+  -webkit-font-smoothing:antialiased;
+  color:#0b1020;
+}
+.app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+.screen{display:none;width:100%;max-width:460px}
+.screen.active{display:block}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));backdrop-filter: blur(8px);border-radius:16px;padding:18px;box-shadow:0 6px 20px rgba(11,16,32,0.12);}
+.start-card{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
+h1{margin:6px 0;font-size:28px}
+.quiz-logo{width:100%;max-width:360px;height:auto;margin:0 auto 18px;display:block;border-radius:16px;box-shadow:none;}
+.lead{opacity:0.95;margin:0 0 6px}
+.small{font-size:12px;color:rgba(11,16,32,0.6);margin-top:6px}
+input[type="text"]{width:100%;padding:14px;border-radius:12px;border:none;outline:none;background:rgba(255,255,255,0.06);color:#091021;font-size:16px}
+.btn{padding:12px 16px;border-radius:12px;border:none;font-weight:600;cursor:pointer;transition:transform .14s ease, box-shadow .14s ease}
+.btn:active{transform:translateY(2px)}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;box-shadow:0 8px 20px rgba(123,97,255,0.18)}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#091021}
+
+/* Topbar */
+.topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.progress-wrap{flex:1;background:var(--glass-2);height:12px;border-radius:10px;overflow:hidden;margin-right:12px}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .5s cubic-bezier(.2,.9,.2,1)}
+.q-count{min-width:64px;text-align:right;font-weight:600}
+
+/* Question card */
+.question-card{display:flex;flex-direction:column;gap:12px}
+.question-card.teacher-card{border:1px solid rgba(120, 69, 172,0.24);background:linear-gradient(180deg, rgba(126, 72, 210,0.18), rgba(255,255,255,0.10));}
+.question-card.student-card{border:1px solid rgba(36, 134, 209,0.24);background:linear-gradient(180deg, rgba(49, 151, 210,0.18), rgba(255,255,255,0.10));}
+.question-desc{font-size:15px}
+.photos{display:flex;gap:8px;overflow:hidden;flex-wrap:wrap}
+.photos img{height:120px;object-fit:cover;border-radius:10px;flex:1;min-width:80px;box-shadow:0 8px 18px rgba(9,16,33,0.08);transition:transform .28s ease}
+.photos img:only-child{aspect-ratio:4/3;width:100%;height:auto;flex:none}
+.photos img:hover{transform:scale(1.03)}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.option-btn{padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.04);cursor:pointer;font-weight:700;transition:transform .12s ease, box-shadow .12s ease, background .12s ease}
+.option-btn:hover{transform:translateY(-4px)}
+.option-btn.selected{box-shadow:0 10px 30px rgba(123,97,255,0.12);background:linear-gradient(90deg,rgba(123,97,255,0.12),rgba(255,92,168,0.06))}
+.option-btn.correct{background:linear-gradient(90deg,#2ecc71,#27ae60);color:white}
+.option-btn.wrong{background:linear-gradient(90deg,#ff7b7b,#ff5252);color:white}
+
+/* Result / Podium */
+.result-card{text-align:center}
+.podium{display:flex;gap:8px;align-items:end;justify-content:center;margin:12px 0}
+.podium .place{width:30%;display:flex;flex-direction:column;align-items:center}
+.place .bar{width:100%;border-radius:12px 12px 0 0;background:linear-gradient(180deg,#ffd54a,#ffb300);display:flex;align-items:flex-end;justify-content:center;padding-top:6px;color:#111}
+.place.second .bar{background:linear-gradient(180deg,#cfd8dc,#90a4ae)}
+.place.third .bar{background:linear-gradient(180deg,#ef9a9a,#e57373)}
+.place .label{margin-top:8px;font-weight:700}
+
+/* Responsive tweaks */
+@media(min-width:520px){
+  .photos img{height:120px}
+  .option-btn{padding:16px}
+}
+
+/* Simple transitions */
+.fade-in{animation:fadeIn .35s ease both}
+.fade-out{animation:fadeOut .28s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0;transform:translateY(-6px)}}
+
+/* Admin panel & winners */
+.admin-toggle{position:fixed;left:18px;top:18px;z-index:40}
+.admin-screen{display:none;position:fixed;inset:0;background:rgba(11,16,32,0.45);padding:18px;align-items:center;justify-content:center;z-index:50}
+.admin-screen.active{display:flex}
+.admin-card{width:100%;max-width:520px;}
+.admin-card input{width:100%;padding:12px;margin-top:10px;border-radius:12px;border:none;background:rgba(255,255,255,0.08);color:#091021;font-size:16px}
+.winners-card{background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));}
+#winners-list{display:block}
+.winners-table{width:100%;border-collapse:collapse;margin-top:8px}
+.winners-table th,.winners-table td{padding:8px;text-align:left;border-bottom:1px solid rgba(0,0,0,0.06)}
+.winners-table th{font-weight:700}
+#participants-list{margin-top:10px;overflow:auto;max-height:300px}
+.participants-table{width:100%;border-collapse:collapse;margin-top:8px}
+.participants-table th,.participants-table td{padding:10px;text-align:left;border-bottom:1px solid rgba(0,0,0,0.08)}
+.participants-table th{font-weight:700;color:#333}
+.participants-table th.sortable{cursor:pointer;user-select:none}
+.participants-table th.sortable:hover{color:#7b61ff}
+.participants-table tr:hover{background:rgba(255,255,255,0.12)}
+
+.modal{position:fixed;inset:0;background:rgba(11,16,32,0.65);display:flex;align-items:center;justify-content:center;z-index:60;}
+.modal.hidden{display:none}
+.modal-card{width:min(440px,90%);background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,250,250,0.96));backdrop-filter:blur(16px);border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,0.18);}
+.modal-card h3{margin:0 0 10px;font-size:20px}
+.modal-card p{margin:0 0 18px;color:#454545;line-height:1.5}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
