@@ -188,14 +188,20 @@ function renderQuestion(){
   const q = quizData[state.index];
   const questionCard = document.getElementById('question-card');
   questionDesc.textContent = q.desc;
-  hiddenContent.classList.remove('visible');
-  revealBtn.style.display = 'inline-flex';  
 
-  revealBtn.addEventListener('click', () => {
+  hiddenContent.classList.remove('visible');
+  hiddenContent.style.display = 'none';
+
+  revealBtn.style.display = 'inline-flex';
+
+  revealBtn.onclick = () => {
+    hiddenContent.style.display = 'block';
     hiddenContent.classList.add('visible');
+
     revealBtn.style.display = 'none';
-  });
-  
+  };
+
+
   if(questionCard){
     questionCard.classList.remove('teacher-card','student-card');
     questionCard.classList.add(q.type === 'teacher' ? 'teacher-card' : 'student-card');
