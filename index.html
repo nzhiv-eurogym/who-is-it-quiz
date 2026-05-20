@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Угадай, кто это — Quiz</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Firebase (compat) SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Start screen -->
+    <section id="start-screen" class="screen active">
+      <div class="card start-card">
+        <img class="quiz-logo" src="img/logo.png" alt="Quiz logo" />
+        <h1>Угадай, кто это</h1>
+        <p class="lead">Введи имя и начни проходить квиз</p>
+        <input id="name-input" type="text" placeholder="Твоё имя" maxlength="20" required>
+        <p id="name-error" class="error-message" style="display:none;">Пожалуйста, введи имя.</p>
+        <button id="start-btn" class="btn primary">Начать</button>
+      </div>
+      <!-- Winners table (appears when admin stopped the quiz) -->
+      <div id="winners-wrap" class="card winners-card" style="display:none; margin-top:12px;">
+        <h3>Итог — Победители</h3>
+        <div id="winners-list"></div>
+        <p class="small">Ожидайте объявления победителей администратором.</p>
+      </div>
+    </section>
+
+    <!-- Quiz screen -->
+
+    <!-- Admin page toggle -->
+    <div id="admin-toggle" class="admin-toggle">
+      <button id="open-admin" class="btn ghost">Admin</button>
+    </div>
+
+    <section id="admin-screen" class="admin-screen">
+      <div class="card admin-card">
+        <h2>Администрирование</h2>
+        <div id="admin-login">
+          <p class="small">Введите пароль администратора для доступа к результатам.</p>
+          <input id="admin-password" type="password" placeholder="Пароль администратора" />
+          <button id="admin-login-btn" class="btn primary">Войти</button>
+          <button id="admin-close-login" class="btn ghost" style="margin-top:10px;">Закрыть</button>
+        </div>
+
+        <div id="admin-dashboard" style="display:none; margin-top:14px;">
+          <p class="small">Текущие результаты участников и управление квизом.</p>
+          <div id="participants-list"></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;justify-content:flex-start;">
+            <button id="admin-stop-btn" class="btn ghost">Остановить квиз</button>
+            <button id="admin-reset-btn" class="btn ghost">Сбросить остановку</button>
+            <button id="admin-clear-btn" class="btn ghost">Сбросить результаты</button>
+            <button id="admin-refresh-btn" class="btn ghost">Обновить список</button>
+            <button id="admin-logout-btn" class="btn ghost">Выйти</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reset confirmation modal -->
+    <div id="reset-modal" class="modal hidden">
+      <div class="modal-card">
+        <h3>Подтвердите сброс результатов</h3>
+        <p>Вы уверены, что хотите удалить все результаты квиза? Это действие нельзя отменить.</p>
+        <div class="modal-actions">
+          <button id="reset-confirm-btn" class="btn primary">Да, сбросить</button>
+          <button id="reset-cancel-btn" class="btn ghost">Отмена</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz screen -->
+    <section id="quiz-screen" class="screen">
+      <div class="topbar">
+        <div id="progress-wrap" class="progress-wrap">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div id="q-count" class="q-count">1 / 1</div>
+      </div>
+
+      <div id="question-card" class="card question-card">
+        <div id="question-desc" class="question-desc"></div>
+        <div id="photos" class="photos"></div>
+        <div id="options" class="options"></div>
+      </div>
+    </section>
+
+    <!-- Result screen -->
+    <section id="result-screen" class="screen">
+      <div class="card result-card">
+        <h2>Твой результат</h2>
+        <p id="result-text" class="lead"></p>
+        <div id="podium" class="podium"></div>
+        <div class="actions">
+          <button id="retry-btn" class="btn ghost">Сбросить и попробовать снова</button>
+        </div>
+        <p class="small">Если Firebase не настроен — результаты сохраняются локально.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
