@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="icon" type="image/png" href="img/favicon.png">
-  <title>Угадай, кто это — Quiz</title>
+  <title>Школьный альбом</title>
   <link rel="stylesheet" href="style.css">
   <!-- Firebase (compat) SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -17,8 +17,15 @@
     <section id="start-screen" class="screen active">
       <div class="card start-card">
         <img class="quiz-logo" src="img/logo.png" alt="Quiz logo" />
-        <h1>Угадай, кто это</h1>
-        <p class="lead">Введи имя и начни проходить квиз</p>
+        <h1>Школьный альбом</h1>
+
+        <p class="lead">
+            Угадай, кто скрывается за историей
+        </p>
+
+        <p class="small">
+            Введи имя и начни проходить квиз
+        </p>
         <input id="name-input" type="text" placeholder="Твоё имя" maxlength="20" required>
         <p id="name-error" class="error-message" style="display:none;">Пожалуйста, введи имя.</p>
         <button id="start-btn" class="btn primary">Начать</button>
