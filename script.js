@@ -121,6 +121,8 @@ const progressBar = document.getElementById('progress-bar');
 const qCount = document.getElementById('q-count');
 const questionDesc = document.getElementById('question-desc');
 const photosWrap = document.getElementById('photos');
+const revealBtn = document.getElementById('reveal-btn');
+const hiddenContent = document.getElementById('hidden-content');
 const optionsWrap = document.getElementById('options');
 
 const resultText = document.getElementById('result-text');
@@ -181,9 +183,19 @@ function resolveImagePath(src){
 }
 
 function renderQuestion(){
+
+
   const q = quizData[state.index];
   const questionCard = document.getElementById('question-card');
   questionDesc.textContent = q.desc;
+  hiddenContent.classList.remove('visible');
+  revealBtn.style.display = 'inline-flex';  
+
+  revealBtn.addEventListener('click', () => {
+    hiddenContent.classList.add('visible');
+    revealBtn.style.display = 'none';
+  });
+  
   if(questionCard){
     questionCard.classList.remove('teacher-card','student-card');
     questionCard.classList.add(q.type === 'teacher' ? 'teacher-card' : 'student-card');

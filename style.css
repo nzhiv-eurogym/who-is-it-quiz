@@ -569,3 +569,30 @@ input[type="password"]:focus {
     z-index: 10;
   }
 }
+
+.hidden-content {
+  display: none;
+  margin-top: 18px;
+}
+
+.hidden-content.visible {
+  display: block;
+  animation: fadeInAlbum 0.45s ease;
+}
+
+.reveal-btn {
+  align-self: center;
+  margin-top: 4px;
+}
+
+@keyframes fadeInAlbum {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
