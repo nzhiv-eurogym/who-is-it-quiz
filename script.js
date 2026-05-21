@@ -365,11 +365,12 @@ function renderPodium(list){
 }
 
 // Сброс и попытка снова — очищаем локальное хранилище
-retryBtn.addEventListener('click', ()=>{
-  localStorage.removeItem(STORAGE_KEY);
-  // опционально можно удалить только текущее имя результат
-  location.reload();
-});
+if(retryBtn){
+  retryBtn.addEventListener('click', ()=>{
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  });
+}
 
 // --- Admin: stop quiz и публикация результатов ---
 const winnersWrap = document.getElementById('winners-wrap');
