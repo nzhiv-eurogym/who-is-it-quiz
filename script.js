@@ -119,9 +119,9 @@ const progressBar = document.getElementById('progress-bar');
 const qCount = document.getElementById('q-count');
 const questionDesc = document.getElementById('question-desc');
 const photosWrap = document.getElementById('photos');
-const revealBtn = document.getElementById('reveal-btn');
 const hiddenContent = document.getElementById('hidden-content');
 const optionsWrap = document.getElementById('options');
+const nextBtn = document.getElementById('next-btn');
 
 const resultText = document.getElementById('result-text');
 const podiumEl = document.getElementById('podium');
@@ -182,23 +182,16 @@ function resolveImagePath(src){
 
 function renderQuestion(){
 
-
   const q = quizData[state.index];
   const questionCard = document.getElementById('question-card');
   questionDesc.textContent = q.desc;
 
+  inputLocked = false;
+
   hiddenContent.classList.remove('visible');
   hiddenContent.style.display = 'none';
 
-  revealBtn.style.display = 'inline-flex';
-
-  revealBtn.onclick = () => {
-    hiddenContent.style.display = 'block';
-    hiddenContent.classList.add('visible');
-
-    revealBtn.style.display = 'none';
-  };
-
+  nextBtn.style.display = 'none';
 
   if(questionCard){
     questionCard.classList.remove('teacher-card','student-card');
@@ -252,15 +245,12 @@ let inputLocked = false;
 function onSelect(selectedIndex, btnEl){
   if(inputLocked) return;
   inputLocked = true;
-  // подсветка выбранной
-  document.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));
-  btnEl.classList.add('selected');
 
   const q = quizData[state.index];
   const correctIndex = q.answer;
 
-  // отмечаем правильный/неправильный
   const buttons = Array.from(document.querySelectorAll('.option-btn'));
+
   buttons.forEach((b, idx) => {
     if(idx === correctIndex){
       b.classList.add('correct');
@@ -274,17 +264,21 @@ function onSelect(selectedIndex, btnEl){
     state.score += 1;
   }
 
-  // короткая задержка, затем следующий вопрос
-  setTimeout(() => {
-    state.index += 1;
-    if(state.index >= quizData.length){
-      finishQuiz();
-    } else {
-      inputLocked = false;
-      renderQuestion();
-    }
-  }, 900);
+  hiddenContent.style.display = 'block';
+  hiddenContent.classList.add('visible');
+
+  nextBtn.style.display = 'inline-flex';
 }
+
+nextBtn.addEventListener('click', () => {
+  state.index += 1;
+
+  if(state.index >= quizData.length){
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+});
 
 function finishQuiz(){
   state.completed = true;
