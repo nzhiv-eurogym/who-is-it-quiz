@@ -537,9 +537,6 @@ if(firebaseEnabled){
       const card = startScreen.querySelector('.start-card'); if(card) card.style.display='flex';
     }
   });
-  database.ref('control/stop').once('value', snap => {
-    const v = snap.val(); if(v && v.stopped) fetchAndRenderWinners();
-  });
 } else {
   const localStopped = localStorage.getItem('quiz_stopped_v1');
   if(localStopped){
@@ -673,9 +670,28 @@ function renderWinners(list){
   winnersList.appendChild(table);
 }
 
-// Инициализация: если уже выполнен — показываем результаты, иначе привязываем старт
-if(!checkLocalCompleted()){
+function initQuiz(){
   if(startBtn) startBtn.addEventListener('click', startQuiz);
+
+  if(firebaseEnabled && database){
+    database.ref('control/stop').once('value', snap => {
+      const v = snap.val();
+
+      if(v && v.stopped){
+        startScreen.classList.add('active');
+        quizScreen.classList.remove('active');
+        resultScreen.classList.remove('active');
+
+        fetchAndRenderWinners();
+      } else {
+        checkLocalCompleted();
+      }
+    });
+  } else {
+    checkLocalCompleted();
+  }
 }
+
+initQuiz();
 
 // --- Конец ---
