@@ -161,8 +161,31 @@ if(nameInput){
   });
 }
 
-function startQuiz(){
+function normalizeName(name){
+  return name.trim().toLowerCase();
+}
+
+async function hasUserAlreadyPlayed(name){
+  if(!firebaseEnabled || !database) return false;
+
+  const snap = await database.ref('scores').once('value');
+  const targetName = normalizeName(name);
+
+  let exists = false;
+
+  snap.forEach(child => {
+    const item = child.val();
+    if(item && item.name && normalizeName(item.name) === targetName){
+      exists = true;
+    }
+  });
+
+  return exists;
+}
+
+async function startQuiz(){
   const name = nameInput.value.trim();
+
   if(!name){
     if(nameError){
       nameError.textContent = 'Пожалуйста, введи имя.';
@@ -174,6 +197,17 @@ function startQuiz(){
   if(nameError){
     nameError.style.display = 'none';
   }
+
+  const alreadyPlayed = await hasUserAlreadyPlayed(name);
+
+  if(alreadyPlayed){
+    if(nameError){
+      nameError.textContent = 'Пользователь с таким именем уже проходил квиз.';
+      nameError.style.display = 'block';
+    }
+    return;
+  }
+
   state.name = name;
   state.index = 0;
   state.score = 0;
