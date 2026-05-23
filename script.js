@@ -306,6 +306,13 @@ nextBtn.addEventListener('click', () => {
     finishQuiz();
   } else {
     renderQuestion();
+
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }, 80);
   }
 });
 
