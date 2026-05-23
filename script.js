@@ -25,6 +25,7 @@ const STORAGE_KEY = 'quiz_completed_v1';
 const RESULTS_KEY = 'quiz_results_v1';
 const ADMIN_PASSWORD = 'quizadmin2026';
 const ADMIN_SESSION_KEY = 'quiz_admin_authenticated_v1';
+const RESET_VERSION_KEY = 'quiz_reset_version_v1';
 
 let database = null;
 let adminSortField = 'score';
@@ -101,9 +102,18 @@ const startBtn = document.getElementById('start-btn');
 // Внутреннее состояние квиза
 const state = { index: 0, score: 0, name: '', completed: false };
 
-function checkLocalCompleted(){
+function checkLocalCompleted(currentResetVersion = null){
+  const savedResetVersion = localStorage.getItem(RESET_VERSION_KEY);
+
+  if(currentResetVersion && savedResetVersion !== String(currentResetVersion)){
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.setItem(RESET_VERSION_KEY, String(currentResetVersion));
+    return false;
+  }
+
   const saved = localStorage.getItem(STORAGE_KEY);
   if(!saved) return false;
+
   try{
     const data = JSON.parse(saved);
     state.name = data.name || '';
@@ -111,7 +121,10 @@ function checkLocalCompleted(){
     state.completed = true;
     showResult();
     return true;
-  }catch(e){ console.warn('Error parsing storage', e); }
+  }catch(e){
+    console.warn('Error parsing storage', e);
+  }
+
   return false;
 }
 
@@ -320,6 +333,17 @@ function finishQuiz(){
   state.completed = true;
   // сохраняем локально, чтобы нельзя было пройти заново после перезагрузки
   localStorage.setItem(STORAGE_KEY, JSON.stringify({name: state.name, score: state.score}));
+
+  if(firebaseEnabled && database){
+    database.ref('control/resetVersion').once('value', snap => {
+      const resetVersion = snap.val();
+      if(resetVersion){
+        localStorage.setItem(RESET_VERSION_KEY, String(resetVersion));
+      }
+    }
+  });
+  }
+
   saveLocalResult({name: state.name, score: state.score, ts: Date.now()});
 
   // сохраняем в Firebase если возможно
@@ -332,6 +356,8 @@ function finishQuiz(){
 
   showResult();
 }
+
+
 
 function saveLocalResult(entry){
   try{
@@ -622,6 +648,7 @@ async function clearQuizResults(){
     try{
       await database.ref('scores').remove();
       await database.ref('control/winners').remove();
+      await database.ref('control/resetVersion').set(Date.now());
       await database.ref('control/stop').set({stopped:false, ts: Date.now()});
       refreshAdminResults();
       if(winnersWrap) winnersWrap.style.display = 'none';
@@ -765,17 +792,28 @@ function initQuiz(){
   if(startBtn) startBtn.addEventListener('click', startQuiz);
 
   if(firebaseEnabled && database){
-    database.ref('control/stop').once('value', snap => {
-      const v = snap.val();
+    database.ref('control').once('value', snap => {
+      const control = snap.val() || {};
+      const stop = control.stop;
+      const resetVersion = control.resetVersion;
 
-      if(v && v.stopped){
+      if(resetVersion){
+        const savedResetVersion = localStorage.getItem(RESET_VERSION_KEY);
+
+        if(savedResetVersion !== String(resetVersion)){
+          localStorage.removeItem(STORAGE_KEY);
+          localStorage.setItem(RESET_VERSION_KEY, String(resetVersion));
+        }
+      }
+
+      if(stop && stop.stopped){
         startScreen.classList.add('active');
         quizScreen.classList.remove('active');
         resultScreen.classList.remove('active');
 
         fetchAndRenderWinners();
       } else {
-        checkLocalCompleted();
+        checkLocalCompleted(resetVersion);
       }
     });
   } else {
