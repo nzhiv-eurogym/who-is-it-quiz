@@ -286,10 +286,17 @@ function onSelect(selectedIndex, btnEl){
     state.score += 1;
   }
 
-  hiddenContent.style.display = 'block';
+  hiddenContent.style.display = 'block'; 
   hiddenContent.classList.add('visible');
 
-  nextBtn.style.display = 'inline-flex';
+  setTimeout(() => {
+    hiddenContent.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }, 120);
+
+nextBtn.style.display = 'inline-flex';
 }
 
 nextBtn.addEventListener('click', () => {
