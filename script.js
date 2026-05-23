@@ -340,8 +340,7 @@ function finishQuiz(){
       if(resetVersion){
         localStorage.setItem(RESET_VERSION_KEY, String(resetVersion));
       }
-    }
-  });
+    });
   }
 
   saveLocalResult({name: state.name, score: state.score, ts: Date.now()});
