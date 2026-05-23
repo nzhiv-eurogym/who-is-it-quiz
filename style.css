@@ -126,12 +126,14 @@ body::before {
 }
 
 .quiz-logo {
-  width: min(400px, 90%);
+  width: min(620px, 70%);
   height: auto;
+
+  margin: 0 auto 36px;
   display: block;
-  border-radius: 22px;
-  margin: 0 auto 24px;
+  opacity: 0.92;
 }
+
 
 h1,
 h2,
@@ -142,7 +144,7 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(48px, 7vw, 82px);
+  font-size: clamp(44px, 6vw, 74px);
   line-height: 0.95;
   letter-spacing: -0.05em;
   font-weight: 800;
