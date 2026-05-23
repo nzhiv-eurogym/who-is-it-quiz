@@ -655,29 +655,87 @@ function fetchAndRenderWinners(){
 
 function renderWinners(list){
   if(!winnersList) return;
-  winnersList.innerHTML = '';
-  if(!list || list.length === 0){ winnersList.textContent = 'Победители пока не объявлены.'; return; }
-  const table = document.createElement('table'); table.className = 'winners-table';
-  const thead = document.createElement('thead'); thead.innerHTML = '<tr><th>#</th><th>Имя</th><th>Очки</th></tr>';
-  table.appendChild(thead);
-  const tbody = document.createElement('tbody');
 
+  winnersList.innerHTML = '';
+
+  if(!list || list.length === 0){
+    winnersList.textContent = 'Победители пока не объявлены.';
+    return;
+  }
+
+  const sorted = [...list].sort((a, b) => (b.score || 0) - (a.score || 0));
+
+  const groups = [];
   let currentPlace = 0;
   let previousScore = null;
 
-  list.forEach((p, i) => {
-  const score = p.score || 0;
+  sorted.forEach((p, index) => {
+    const score = p.score || 0;
 
-  if(score !== previousScore){
-    currentPlace = i + 1;
-    previousScore = score;
-  }
+    if(score !== previousScore){
+      currentPlace = index + 1;
+      previousScore = score;
+      groups.push({
+        place: currentPlace,
+        score,
+        people: []
+      });
+    }
 
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${currentPlace}</td><td>${p.name || '—'}</td><td>${score}</td>`;
-  tbody.appendChild(tr);
+    groups[groups.length - 1].people.push(p);
   });
 
+  const intro = document.createElement('div');
+  intro.className = 'winners-intro';
+  intro.innerHTML = `
+    <h3>Финальный рейтинг</h3>
+    <p>Спасибо всем, кто листал школьные истории вместе с нами ✨</p>
+  `;
+  winnersList.appendChild(intro);
+
+  const podium = document.createElement('div');
+  podium.className = 'winner-podium';
+
+  groups.slice(0, 3).forEach(group => {
+    const card = document.createElement('div');
+    card.className = `winner-card place-${group.place}`;
+
+    const names = group.people
+      .map(p => p.name || '—')
+      .join(', ');
+
+    card.innerHTML = `
+      <div class="winner-place">${group.place} место</div>
+      <div class="winner-names">${names}</div>
+      <div class="winner-score">${group.score} баллов</div>
+    `;
+
+    podium.appendChild(card);
+  });
+
+  winnersList.appendChild(podium);
+
+  const allTitle = document.createElement('h3');
+  allTitle.className = 'all-results-title';
+  allTitle.textContent = 'Все результаты';
+  winnersList.appendChild(allTitle);
+
+  const table = document.createElement('table');
+  table.className = 'winners-table';
+
+  const thead = document.createElement('thead');
+  thead.innerHTML = '<tr><th>Место</th><th>Имя</th><th>Очки</th></tr>';
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+
+  groups.forEach(group => {
+    group.people.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${group.place}</td><td>${p.name || '—'}</td><td>${group.score}</td>`;
+      tbody.appendChild(tr);
+    });
+  });
 
   table.appendChild(tbody);
   winnersList.appendChild(table);

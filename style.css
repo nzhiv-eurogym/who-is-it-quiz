@@ -622,3 +622,75 @@ input[type="password"]:focus {
     transform: none;
   }
 }
+
+.winners-intro {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.winners-intro h3 {
+  font-size: clamp(30px, 5vw, 48px);
+  margin-bottom: 10px;
+}
+
+.winners-intro p {
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.winner-podium {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin: 22px 0 28px;
+}
+
+.winner-card {
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255, 253, 249, 0.82);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.winner-card:first-child {
+  background: linear-gradient(135deg, rgba(217, 179, 130, 0.35), rgba(255, 253, 249, 0.9));
+  border-color: rgba(139, 94, 60, 0.22);
+}
+
+.winner-place {
+  color: var(--accent-2);
+  font-weight: 900;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.winner-names {
+  font-size: clamp(22px, 4vw, 34px);
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.winner-score {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.all-results-title {
+  margin: 26px 0 8px;
+  font-size: 24px;
+}
+
+@media (min-width: 720px) {
+  .winner-podium {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .winner-card:first-child {
+    transform: translateY(-8px);
+  }
+}
