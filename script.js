@@ -193,6 +193,12 @@ function renderQuestion(){
 
   nextBtn.style.display = 'none';
 
+  if(state.index === quizData.length - 1){
+    nextBtn.textContent = 'Показать результат';
+  } else {
+    nextBtn.textContent = 'Следующая история';
+  }
+
   if(questionCard){
     questionCard.classList.remove('teacher-card','student-card');
     questionCard.classList.add(q.type === 'teacher' ? 'teacher-card' : 'student-card');
