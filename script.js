@@ -661,11 +661,24 @@ function renderWinners(list){
   const thead = document.createElement('thead'); thead.innerHTML = '<tr><th>#</th><th>Имя</th><th>Очки</th></tr>';
   table.appendChild(thead);
   const tbody = document.createElement('tbody');
-  list.forEach((p,i) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${i+1}</td><td>${p.name || '—'}</td><td>${p.score || 0}</td>`;
-    tbody.appendChild(tr);
+
+  let currentPlace = 0;
+  let previousScore = null;
+
+  list.forEach((p, i) => {
+  const score = p.score || 0;
+
+  if(score !== previousScore){
+    currentPlace = i + 1;
+    previousScore = score;
+  }
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${currentPlace}</td><td>${p.name || '—'}</td><td>${score}</td>`;
+  tbody.appendChild(tr);
   });
+
+
   table.appendChild(tbody);
   winnersList.appendChild(table);
 }
